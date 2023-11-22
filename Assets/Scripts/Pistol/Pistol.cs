@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using BaseTemplate.Behaviours;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class Pistol : MonoSingleton<Pistol>
+public class Pistol : NetworkBehaviour
 {
     [Header("Basics")]
     public Transform bulletOrigin;
@@ -29,13 +30,14 @@ public class Pistol : MonoSingleton<Pistol>
     
     private void Start()
     {
-        
+        if (!IsOwner) return;
         _camera = Camera.main;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
     }
 
     private void Update()
     {
+        if (!IsOwner) return;
         //CoolDown entre les tirs
         if (_cdTime >= 0)
         {
@@ -62,6 +64,7 @@ public class Pistol : MonoSingleton<Pistol>
 
     public void Fire(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
         //Listener du bouton de tir
         if (context.started)
         {
@@ -93,11 +96,40 @@ public class Pistol : MonoSingleton<Pistol>
                 bullet.SetActive(true);
                 ammo--;
                 UIManager.Instance.ChangeAmmoText(ammo.ToString());
+                ShootServerRpc();
             }
         }
     }
+    
+    [ServerRpc]
+    private void ShootServerRpc()
+    {
+        ShootClientRpc();
+    }
 
+    [ClientRpc]
+    private void ShootClientRpc()
+    {
+        if (IsOwner) return; // Ignore sur le client qui a tiré
 
+        //Calcul de la visée, Reset du CD de tir et deduction d'une balle
+        //SetAim();
+        _cdTime = fireRate;
+            
+        //Tir Basic, recupere une balle du PoolingManager
+        GameObject bullet = PoolingManager.Instance.GetPooledObject();
+            
+
+        //Set la position de la balle au bout du canon du pistolet
+        if (bullet != null) {
+            bullet.transform.position = bulletOrigin.position;
+            bullet.transform.rotation = bulletOrigin.rotation;
+
+            //Active la balle
+            bullet.SetActive(true);
+        }
+    }
+    
     public Transform SetAim()                                                                                                                                                                                             
     {
         //Tir d'un rayon
