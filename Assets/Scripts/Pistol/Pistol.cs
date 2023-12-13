@@ -4,20 +4,20 @@ using BaseTemplate.Behaviours;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using UnityEngine.Animations;
 
-public class Pistol : NetworkBehaviour
+public class Pistol : MonoBehaviour
 {
     [Header("Basics")]
     public Transform bulletOrigin;
-    public float fireRate;
-    public ParticleSystem fxShoot;
     private bool _isPerformed = false;
 
     [Header("Pistol Infos")] 
     public int ammo = 10;
     public int maxAmmo = 10;
     public float timeForReload = 2f;
-    public int nbOfShoot = 0;
+    public float fireRate;
+    public ParticleSystem fxShoot;
     private float _cdTime;
     
 
@@ -25,19 +25,21 @@ public class Pistol : NetworkBehaviour
     public GameObject aim;
     public LayerMask layerMask;
     private Camera _camera;
-
+    private AimConstraint _constraint;
     
+    public Vector3 hitPoint;
+
     
     private void Start()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         _camera = Camera.main;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
     }
 
     private void Update()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //CoolDown entre les tirs
         if (_cdTime >= 0)
         {
@@ -46,7 +48,7 @@ public class Pistol : NetworkBehaviour
         }
         else
         {
-            SetAim();
+            //SetAim();
         }
 
         if (_isPerformed && ammo <= 0)
@@ -64,43 +66,44 @@ public class Pistol : NetworkBehaviour
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         //Listener du bouton de tir
         if (context.started)
         {
-            SetAim();
+            
             _isPerformed = true;
             fxShoot.Play();
+            Shoot();
         }
             
         if (context.canceled)
             _isPerformed = false;
-        
+    }
+
+    void Shoot()
+    {
         //Tirs
-        if (context.performed && ammo > 0 && _cdTime < 0)
+        if (ammo > 0 && _cdTime < 0)
         {
-            //Calcul de la visée, Reset du CD de tir et deduction d'une balle
-            SetAim();
             _cdTime = fireRate;
-            
-            //Tir Basic, recupere une balle du PoolingManager
             GameObject bullet = PoolingManager.Instance.GetPooledObject();
-            
 
-            //Set la position de la balle au bout du canon du pistolet
             if (bullet != null) {
-                bullet.transform.position = bulletOrigin.position;
-                bullet.transform.rotation = bulletOrigin.rotation;
-
-                //Active la balle
-                bullet.SetActive(true);
+                
+                if (bullet.TryGetComponent<Bullet>(out Bullet compBullet))
+                {
+                    bullet.SetActive(true);
+                    compBullet.SetAimTransform(SetAim());
+                }
+                
                 ammo--;
                 UIManager.Instance.ChangeAmmoText(ammo.ToString());
-                ShootServerRpc();
+                //ShootServerRpc();
             }
         }
     }
     
+    /*
     [ServerRpc]
     private void ShootServerRpc()
     {
@@ -128,7 +131,7 @@ public class Pistol : NetworkBehaviour
             //Active la balle
             bullet.SetActive(true);
         }
-    }
+    }*/
     
     public Transform SetAim()                                                                                                                                                                                             
     {
@@ -142,13 +145,12 @@ public class Pistol : NetworkBehaviour
             aim.transform.position = hit.point;
             hitPoint = hit.point;
         }
+        else
+        {
+            aim.transform.localPosition = new Vector3(0,0,10 );
+        }
         return bulletOrigin;
     }
     
-    public Vector3 hitPoint;
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(hitPoint, 0.5f); 
-    }
+   
 }

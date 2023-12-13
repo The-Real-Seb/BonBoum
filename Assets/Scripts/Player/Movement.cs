@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : NetworkBehaviour
+public class Movement : MonoBehaviour
 {
     
     [HideInInspector]public CharacterController _controller;
@@ -16,6 +16,7 @@ public class Movement : NetworkBehaviour
     private float _speedMultiply = 1f;
     private Quaternion _rotation;
     public AnimationCurve fovCurve;
+    public Rigidbody rb;
     
     [Header("Parameters")]
     public float speed;
@@ -34,12 +35,11 @@ public class Movement : NetworkBehaviour
 
     private void Start()
     {
-        Debug.Log($"Start - IsOwner: {IsOwner}");
         //if (!IsOwner) return;
         _controller = GetComponent<CharacterController>();
         _cam = GetComponentInChildren<Camera>();
         
-        if(!IsOwner) _cam.gameObject.SetActive(false);
+        //if(!IsOwner) _cam.gameObject.SetActive(false);
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -48,9 +48,9 @@ public class Movement : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         
-        SendPositionServerRpc(transform.position, transform.rotation);
+        //SendPositionServerRpc(transform.position, transform.rotation);
         
         _direction = transform.forward * _dir.y + _cam.transform.right * _dir.x;
         _direction *= _speedMultiply;
@@ -61,6 +61,21 @@ public class Movement : NetworkBehaviour
         RunEffect();
     }
 
+    public void Dash()
+    {
+        
+    }
+
+    public void Couch(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void WallRide()
+    {
+        
+    }
+
     public void Move(InputAction.CallbackContext context)
     {
         _dir = context.ReadValue<Vector2>();
@@ -68,7 +83,7 @@ public class Movement : NetworkBehaviour
 
     public void Aim(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         
         Vector2 mouseMove = context.ReadValue<Vector2>();
 
@@ -83,7 +98,7 @@ public class Movement : NetworkBehaviour
 
     public void Run(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if (context.started)
         {
             _speedMultiply = 2.5f;
@@ -97,7 +112,7 @@ public class Movement : NetworkBehaviour
 
     private void RunEffect()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if (_speedMultiply > 1f)
         {
             if (_dir.magnitude > 0)
@@ -120,7 +135,7 @@ public class Movement : NetworkBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if (IsGrounded() && context.performed)
         {
             yVelocity = jumpHeight;
@@ -129,13 +144,13 @@ public class Movement : NetworkBehaviour
     
     private void ApplyGravity()
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         if (IsGrounded()) yVelocity = -0.5f;
         else yVelocity += gravity * Time.deltaTime;
     }
     
     public bool IsGrounded() => _controller.isGrounded;
-    
+    /*
     [ServerRpc]
     public void SendPositionServerRpc(Vector3 position, Quaternion rotation)
     {
@@ -148,6 +163,6 @@ public class Movement : NetworkBehaviour
         if (IsOwner) return;
         transform.position = position;
         transform.rotation = rotation;
-    }
+    }*/
 
 }

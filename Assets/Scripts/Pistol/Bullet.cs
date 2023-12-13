@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Unity.Netcode;
 
-public class Bullet : NetworkBehaviour
+public class Bullet : MonoBehaviour
 {
     [Header("BulletComponents")] 
     private TrailRenderer _trail;
@@ -28,15 +28,23 @@ public class Bullet : NetworkBehaviour
         cooldown = delayToDestroy;
     }
 
+    public void SetAimTransform(Transform aim)
+    {
+        transform.position = aim.position;
+        transform.rotation = aim.rotation;
+        _trail = GetComponent<TrailRenderer>();
+        _trail.Clear();
+    }
+
     private void OnDisable()
     {
         ResetBulletInfo();
     }
 
-
-    void Update()
+    void FixedUpdate()
     {
-        _rb.velocity = transform.forward * (bulletSpeed * speedMultiplier * Time.deltaTime);
+        //_rb.velocity = transform.forward * (bulletSpeed * speedMultiplier * Time.deltaTime);
+        _rb.AddForce(transform.forward * (bulletSpeed * speedMultiplier * Time.deltaTime), ForceMode.Impulse);
         cooldown -= Time.deltaTime;
 
         if (cooldown < 0)
@@ -55,6 +63,10 @@ public class Bullet : NetworkBehaviour
             }
             Destroy();
         }
+        else
+        {
+            Destroy();
+        }
     }
 
     public void Destroy()
@@ -65,13 +77,14 @@ public class Bullet : NetworkBehaviour
     
     public void ResetBulletInfo()
     {
-        bulletSpeed = 1000;
+        bulletSpeed = 2000;
         speedMultiplier = 1;
         bulletDmg = 10;
         dmgMultiplier = 1;
+        _trail.Clear();
     }
     
-    
+    /*
     [ServerRpc(RequireOwnership = false)]
     public void ActivateBulletServerRpc(Vector3 position, Quaternion rotation)
     {
@@ -100,5 +113,5 @@ public class Bullet : NetworkBehaviour
     private void DeactivateBulletClientRpc()
     {
         gameObject.SetActive(false);
-    }
+    }*/
 }

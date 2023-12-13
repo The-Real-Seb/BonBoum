@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class PlayerLife : NetworkBehaviour, Idamageable
+public class PlayerLife : MonoBehaviour, Idamageable
 {
     public float actualLife;
     public float maxLife;
@@ -27,7 +27,7 @@ public class PlayerLife : NetworkBehaviour, Idamageable
             //Death
         }
     }
-    
+    /*
     [ServerRpc(RequireOwnership = false)]
     private void HitServerRpc(float damage)
     {
@@ -45,5 +45,5 @@ public class PlayerLife : NetworkBehaviour, Idamageable
         {
             //Death
         }
-    }
+    }*/
 }
