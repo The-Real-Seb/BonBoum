@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BaseTemplate.Behaviours;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : MonoSingleton<Movement>
+public class Movement : MonoBehaviour
 {
     
     [HideInInspector]public CharacterController _controller;
@@ -15,6 +16,7 @@ public class Movement : MonoSingleton<Movement>
     private float _speedMultiply = 1f;
     private Quaternion _rotation;
     public AnimationCurve fovCurve;
+    public Rigidbody rb;
     
     [Header("Parameters")]
     public float speed;
@@ -27,22 +29,51 @@ public class Movement : MonoSingleton<Movement>
     public float camRotaPower = 1f;
     [HideInInspector]public float yVelocity;
 
+    [Header("Network parameters")] 
+    public int networkID;
+    
+
     private void Start()
     {
+        //if (!IsOwner) return;
         _controller = GetComponent<CharacterController>();
         _cam = GetComponentInChildren<Camera>();
+        
+        //if(!IsOwner) _cam.gameObject.SetActive(false);
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
     }
 
     private void Update()
     {
+        //if (!IsOwner) return;
+        
+        //SendPositionServerRpc(transform.position, transform.rotation);
+        
         _direction = transform.forward * _dir.y + _cam.transform.right * _dir.x;
         _direction *= _speedMultiply;
         _direction.y = yVelocity;
         _controller.Move(_direction * (speed * Time.deltaTime));
+        
         ApplyGravity();
         RunEffect();
+    }
+
+    public void Dash()
+    {
+        
+    }
+
+    public void Couch(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void WallRide()
+    {
+        
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -52,18 +83,22 @@ public class Movement : MonoSingleton<Movement>
 
     public void Aim(InputAction.CallbackContext context)
     {
+        //if (!IsOwner) return;
+        
         Vector2 mouseMove = context.ReadValue<Vector2>();
 
         _xRotation += mouseMove.x * Time.deltaTime * xSensitivity;
         _yRotation -= mouseMove.y * Time.deltaTime * ySensitivity;
         _yRotation = Mathf.Clamp(_yRotation, -90, 90);
+
+        transform.rotation = Quaternion.Euler(0, _xRotation, 0);
+        _cam.transform.localRotation = Quaternion.Euler(_yRotation, 0, 0);
         
-        transform.rotation = Quaternion.Euler(0,_xRotation,0);
-        _cam.transform.localRotation = Quaternion.Euler(_yRotation,0,0);
     }
 
     public void Run(InputAction.CallbackContext context)
     {
+        //if (!IsOwner) return;
         if (context.started)
         {
             _speedMultiply = 2.5f;
@@ -77,6 +112,7 @@ public class Movement : MonoSingleton<Movement>
 
     private void RunEffect()
     {
+        //if (!IsOwner) return;
         if (_speedMultiply > 1f)
         {
             if (_dir.magnitude > 0)
@@ -99,6 +135,7 @@ public class Movement : MonoSingleton<Movement>
 
     public void Jump(InputAction.CallbackContext context)
     {
+        //if (!IsOwner) return;
         if (IsGrounded() && context.performed)
         {
             yVelocity = jumpHeight;
@@ -107,10 +144,25 @@ public class Movement : MonoSingleton<Movement>
     
     private void ApplyGravity()
     {
+        //if (!IsOwner) return;
         if (IsGrounded()) yVelocity = -0.5f;
         else yVelocity += gravity * Time.deltaTime;
     }
     
     public bool IsGrounded() => _controller.isGrounded;
+    /*
+    [ServerRpc]
+    public void SendPositionServerRpc(Vector3 position, Quaternion rotation)
+    {
+        UpdatePositionClientRpc(position, rotation);
+    }
+
+    [ClientRpc]
+    public void UpdatePositionClientRpc(Vector3 position, Quaternion rotation)
+    {
+        if (IsOwner) return;
+        transform.position = position;
+        transform.rotation = rotation;
+    }*/
 
 }
