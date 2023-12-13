@@ -4,7 +4,7 @@ using BaseTemplate.Behaviours;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Pistol : MonoSingleton<Pistol>
+public class Pistol : Weapon
 {
     [Header("Basics")]
     public Transform bulletOrigin;
@@ -13,10 +13,7 @@ public class Pistol : MonoSingleton<Pistol>
     private bool _isPerformed = false;
 
     [Header("Pistol Infos")] 
-    public int ammo = 10;
-    public int maxAmmo = 10;
-    public float timeForReload = 2f;
-    public int nbOfShoot = 0;
+    
     private float _cdTime;
     
 
@@ -73,28 +70,6 @@ public class Pistol : MonoSingleton<Pistol>
         if (context.canceled)
             _isPerformed = false;
         
-        //Tirs
-        if (context.performed && ammo > 0 && _cdTime < 0)
-        {
-            //Calcul de la visée, Reset du CD de tir et deduction d'une balle
-            SetAim();
-            _cdTime = fireRate;
-            
-            //Tir Basic, recupere une balle du PoolingManager
-            GameObject bullet = PoolingManager.Instance.GetPooledObject();
-            
-
-            //Set la position de la balle au bout du canon du pistolet
-            if (bullet != null) {
-                bullet.transform.position = bulletOrigin.position;
-                bullet.transform.rotation = bulletOrigin.rotation;
-
-                //Active la balle
-                bullet.SetActive(true);
-                ammo--;
-                UIManager.Instance.ChangeAmmoText(ammo.ToString());
-            }
-        }
     }
 
 
