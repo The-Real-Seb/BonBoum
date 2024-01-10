@@ -19,6 +19,8 @@ public class Pistol : MonoBehaviour
     public float fireRate;
     public ParticleSystem fxShoot;
     private float _cdTime;
+
+    public float damage = 10f;
     
 
     [Header("Aim Infos")] 
@@ -27,6 +29,8 @@ public class Pistol : MonoBehaviour
     private Camera _camera;
     private AimConstraint _constraint;
     
+    public List<Weapon> weapons;
+    public int indexWeapon;
     public Vector3 hitPoint;
 
     
@@ -80,27 +84,9 @@ public class Pistol : MonoBehaviour
             _isPerformed = false;
     }
 
-    void Shoot()
-    {
-        //Tirs
-        if (ammo > 0 && _cdTime < 0)
-        {
-            _cdTime = fireRate;
-            GameObject bullet = PoolingManager.Instance.GetPooledObject();
-
-            if (bullet != null) {
-                
-                if (bullet.TryGetComponent<Bullet>(out Bullet compBullet))
-                {
-                    bullet.SetActive(true);
-                    compBullet.SetAimTransform(SetAim());
-                }
-                
-                ammo--;
-                UIManager.Instance.ChangeAmmoText(ammo.ToString());
-                //ShootServerRpc();
-            }
-        }
+     public void Shoot()
+    { 
+        weapons[indexWeapon].Shoot(SetAim());
     }
     
     /*
@@ -138,17 +124,30 @@ public class Pistol : MonoBehaviour
         //Tir d'un rayon
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         RaycastHit hit;
-
+        Debug.Log("Avant le raycast");
         if (Physics.Raycast(ray, out hit,layerMask))
         {
+            Debug.Log("Test Raycast");
+
+            Debug.Log(hit.transform.name); 
+
             //Ajustement de notre Aim en fonction du hitPoint, fonctionne avec un AimConstraint
             aim.transform.position = hit.point;
             hitPoint = hit.point;
+
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null)
+            {
+                 Debug.Log("Pendant le raycast");
+                target.TakeDamage(damage);
+            }
         }
         else
         {
+             Debug.Log("Avant le raycast");
             aim.transform.localPosition = new Vector3(0,0,10 );
         }
+         Debug.Log("FIN");
         return bulletOrigin;
     }
     

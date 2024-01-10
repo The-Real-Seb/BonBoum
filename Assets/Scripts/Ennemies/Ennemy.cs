@@ -22,12 +22,6 @@ public class Ennemy : MonoBehaviour
             float dmg = bullet.bulletDmg * bullet.dmgMultiplier;
             TakeDmg(dmg);
         }
-
-        if (other.CompareTag("Explosion"))
-        {
-            Explosion explosion = other.GetComponent<Explosion>();
-            TakeDmg(explosion.explosionDamage);
-        }
     }
 
     public void TakeDmg(float dmg)
