@@ -77,7 +77,7 @@ public class Bullet : MonoBehaviour
     
     public void ResetBulletInfo()
     {
-        bulletSpeed = 2000;
+        //bulletSpeed = 2000;
         speedMultiplier = 1;
         bulletDmg = 10;
         dmgMultiplier = 1;

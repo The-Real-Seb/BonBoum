@@ -25,6 +25,14 @@ public class Movement : MonoBehaviour
     public float ySensitivity = 10f;
     public float gravity = -9.81f;
 
+    [Header("Dash Parameters")] 
+    public float cooldownDash = 2f;
+    public float dashDuration = 0.2f;  // Durée du dash
+    public float dashSpeed = 10f;      // Vitesse du dash
+
+    private float _dashCDTime;
+    private float _dashTimeLeft; 
+
     [Header("Feel parameters")] 
     public float camRotaPower = 1f;
     [HideInInspector]public float yVelocity;
@@ -38,7 +46,7 @@ public class Movement : MonoBehaviour
         //if (!IsOwner) return;
         _controller = GetComponent<CharacterController>();
         _cam = GetComponentInChildren<Camera>();
-        
+        rb = GetComponent<Rigidbody>();
         //if(!IsOwner) _cam.gameObject.SetActive(false);
         
         Cursor.lockState = CursorLockMode.Locked;
@@ -48,33 +56,55 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        //if (!IsOwner) return;
+        float fov ;
+        if (_dashTimeLeft > 0)
+        {
+            _dashTimeLeft -= Time.deltaTime;
+            _direction.y = 0;
+            Vector3 dashDirection = _direction * dashSpeed;
+            
+            fov = Mathf.Lerp(_cam.fieldOfView, 120f, fovCurve.Evaluate(Time.deltaTime));
+
+            _controller.Move(dashDirection * Time.deltaTime);  // Mouvement de dash
+        }
+        else
+        {
+            _direction = transform.forward * _dir.y + _cam.transform.right * _dir.x;
+            _direction *= _speedMultiply;
+            _direction.y = yVelocity;
+            
+            fov = Mathf.Lerp(_cam.fieldOfView, 60f, fovCurve.Evaluate(Time.deltaTime));
+            
+            _controller.Move(_direction * (speed * Time.deltaTime));
+
+            if (_dashCDTime > 0)
+            {
+                _dashCDTime -= Time.deltaTime;
+            }
+            ApplyGravity();
+        }
         
-        //SendPositionServerRpc(transform.position, transform.rotation);
-        
-        _direction = transform.forward * _dir.y + _cam.transform.right * _dir.x;
-        _direction *= _speedMultiply;
-        _direction.y = yVelocity;
-        _controller.Move(_direction * (speed * Time.deltaTime));
-        
-        ApplyGravity();
+        _cam.fieldOfView = fov;
+        //ApplyGravity();
         RunEffect();
     }
 
-    public void Dash()
+    public void Dash(InputAction.CallbackContext context)
     {
+        /*if (context.started && _dashCDTime <= 0)
+        {
+            _dashCDTime = cooldownDash;
+            _controller.Move(transform.forward * 10);
+        }*/
         
+        if (context.started && _dashCDTime <= 0)
+        {
+            _dashCDTime = cooldownDash;
+            _dashTimeLeft = dashDuration;  // Commencer le dash
+        }
     }
 
-    public void Couch(InputAction.CallbackContext context)
-    {
-        
-    }
-
-    public void WallRide()
-    {
-        
-    }
+    
 
     public void Move(InputAction.CallbackContext context)
     {
@@ -83,8 +113,6 @@ public class Movement : MonoBehaviour
 
     public void Aim(InputAction.CallbackContext context)
     {
-        //if (!IsOwner) return;
-        
         Vector2 mouseMove = context.ReadValue<Vector2>();
 
         _xRotation += mouseMove.x * Time.deltaTime * xSensitivity;
@@ -98,7 +126,6 @@ public class Movement : MonoBehaviour
 
     public void Run(InputAction.CallbackContext context)
     {
-        //if (!IsOwner) return;
         if (context.started)
         {
             _speedMultiply = 2.5f;
@@ -112,7 +139,6 @@ public class Movement : MonoBehaviour
 
     private void RunEffect()
     {
-        //if (!IsOwner) return;
         if (_speedMultiply > 1f)
         {
             if (_dir.magnitude > 0)
@@ -150,19 +176,5 @@ public class Movement : MonoBehaviour
     }
     
     public bool IsGrounded() => _controller.isGrounded;
-    /*
-    [ServerRpc]
-    public void SendPositionServerRpc(Vector3 position, Quaternion rotation)
-    {
-        UpdatePositionClientRpc(position, rotation);
-    }
-
-    [ClientRpc]
-    public void UpdatePositionClientRpc(Vector3 position, Quaternion rotation)
-    {
-        if (IsOwner) return;
-        transform.position = position;
-        transform.rotation = rotation;
-    }*/
-
+    
 }

@@ -70,7 +70,7 @@ public class Pistol : MonoBehaviour
         //Listener du bouton de tir
         if (context.started)
         {
-            
+            SetAim();
             _isPerformed = true;
             fxShoot.Play();
             Shoot();
@@ -93,7 +93,7 @@ public class Pistol : MonoBehaviour
                 if (bullet.TryGetComponent<Bullet>(out Bullet compBullet))
                 {
                     bullet.SetActive(true);
-                    compBullet.SetAimTransform(SetAim());
+                    compBullet.SetAimTransform(bulletOrigin);
                 }
                 
                 ammo--;
@@ -133,7 +133,7 @@ public class Pistol : MonoBehaviour
         }
     }*/
     
-    public Transform SetAim()                                                                                                                                                                                             
+    public void SetAim()                                                                                                                                                                                             
     {
         //Tir d'un rayon
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
@@ -141,15 +141,10 @@ public class Pistol : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit,layerMask))
         {
-            //Ajustement de notre Aim en fonction du hitPoint, fonctionne avec un AimConstraint
             aim.transform.position = hit.point;
             hitPoint = hit.point;
+            bulletOrigin.LookAt(aim.transform.position);
         }
-        else
-        {
-            aim.transform.localPosition = new Vector3(0,0,10 );
-        }
-        return bulletOrigin;
     }
     
    
