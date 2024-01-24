@@ -98,6 +98,7 @@ public class Pistol : MonoBehaviour
                 
                 ammo--;
                 UIManager.Instance.ChangeAmmoText(ammo.ToString());
+                ScreenShaker.Instance.SetShake(0.1f,0.3f);
                 //ShootServerRpc();
             }
         }

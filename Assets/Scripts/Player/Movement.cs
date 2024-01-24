@@ -54,6 +54,7 @@ public class Movement : MonoBehaviour
         
     }
 
+    private bool afterDash;
     private void Update()
     {
         float fov ;
@@ -63,7 +64,8 @@ public class Movement : MonoBehaviour
             _direction.y = 0;
             Vector3 dashDirection = _direction * dashSpeed;
             
-            fov = Mathf.Lerp(_cam.fieldOfView, 120f, fovCurve.Evaluate(Time.deltaTime));
+            fov = Mathf.Lerp(_cam.fieldOfView, 75f, fovCurve.Evaluate(Time.deltaTime));
+            
 
             _controller.Move(dashDirection * Time.deltaTime);  // Mouvement de dash
         }
@@ -74,7 +76,13 @@ public class Movement : MonoBehaviour
             _direction.y = yVelocity;
             
             fov = Mathf.Lerp(_cam.fieldOfView, 60f, fovCurve.Evaluate(Time.deltaTime));
-            
+
+            if (afterDash)
+            {
+                PostProcessManager.Instance.AdjustChromaticAberration(0, dashDuration);
+                afterDash = false;
+            }
+
             _controller.Move(_direction * (speed * Time.deltaTime));
 
             if (_dashCDTime > 0)
@@ -99,18 +107,16 @@ public class Movement : MonoBehaviour
         
         if (context.started && _dashCDTime <= 0)
         {
+            afterDash = true;
             _dashCDTime = cooldownDash;
+            PostProcessManager.Instance.AdjustChromaticAberration(0.3f, dashDuration);
             _dashTimeLeft = dashDuration;  // Commencer le dash
         }
     }
-
-    
-
     public void Move(InputAction.CallbackContext context)
     {
         _dir = context.ReadValue<Vector2>();
     }
-
     public void Aim(InputAction.CallbackContext context)
     {
         Vector2 mouseMove = context.ReadValue<Vector2>();
@@ -123,7 +129,6 @@ public class Movement : MonoBehaviour
         _cam.transform.localRotation = Quaternion.Euler(_yRotation, 0, 0);
         
     }
-
     public void Run(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -136,7 +141,6 @@ public class Movement : MonoBehaviour
             _speedMultiply = 1f;
         }
     }
-
     private void RunEffect()
     {
         if (_speedMultiply > 1f)
@@ -158,7 +162,6 @@ public class Movement : MonoBehaviour
             _cam.fieldOfView = fov;
         }
     }
-
     public void Jump(InputAction.CallbackContext context)
     {
         //if (!IsOwner) return;
@@ -167,7 +170,6 @@ public class Movement : MonoBehaviour
             yVelocity = jumpHeight;
         }
     }
-    
     private void ApplyGravity()
     {
         //if (!IsOwner) return;

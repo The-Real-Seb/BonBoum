@@ -9,6 +9,7 @@ public class Interaction : MonoBehaviour
     public LayerMask layerMask;
     private Camera _camera;
     private bool canInteract;
+    public GameObject panelInteract;
     private void Start()
     {
         _camera = Camera.main;
@@ -29,8 +30,17 @@ public class Interaction : MonoBehaviour
         {
             if (hit.transform.TryGetComponent<IInteractable>(out IInteractable outComp))
             {
-                if(canInteract)
+                panelInteract.SetActive(true);
+                if (canInteract)
+                {
+                    
                     outComp.Interact();
+                }
+                    
+            }
+            else
+            {
+                panelInteract.SetActive(false);
             }
         }
     }
