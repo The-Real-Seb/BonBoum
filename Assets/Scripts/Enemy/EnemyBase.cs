@@ -12,10 +12,16 @@ public class EnemyBase : MonoBehaviour, Idamageable
 
     public float maxLife;
     public float life;
+    public float speed;
     public float attackDamage;
     public float cooldownAttack;
     private bool canAttack;
     public int killValue;
+
+    public GameObject meshLvl1;
+    public GameObject meshLvl2;
+    public GameObject meshLvl3;
+    public GameObject meshLvl4;
 
     public GameObject player;
 
@@ -30,6 +36,11 @@ public class EnemyBase : MonoBehaviour, Idamageable
         agent = GetComponent<NavMeshAgent>();
         life = maxLife;
         canAttack = true;
+        agent.speed = speed;
+        meshLvl1.SetActive(true);
+        meshLvl2.SetActive(false);
+        meshLvl3.SetActive(false);
+        meshLvl4.SetActive(false);
         
         if(!player)
             player = GameObject.FindWithTag("Player");
@@ -71,6 +82,7 @@ public class EnemyBase : MonoBehaviour, Idamageable
     private void OnHit()
     {
         //Anim
+        ChangeMesh();
     }
 
     private void Death()
@@ -94,5 +106,25 @@ public class EnemyBase : MonoBehaviour, Idamageable
         canAttack = false;
         yield return new WaitForSeconds(cooldownAttack);
         canAttack = true;
+    }
+
+    private void ChangeMesh()
+    {
+        if (life <= 75 && life > 51)
+        {
+            meshLvl1.SetActive(false);
+            meshLvl2.SetActive(true);
+        }else if (life <= 50 && life > 26)
+        {
+            meshLvl2.SetActive(false);
+            meshLvl3.SetActive(true);
+
+            agent.speed = speed * 0.6f;
+        }else if (life <= 25)
+        {
+            meshLvl3.SetActive(false);
+            meshLvl4.SetActive(true);
+            agent.speed = speed * 0.3f;
+        }
     }
 }
