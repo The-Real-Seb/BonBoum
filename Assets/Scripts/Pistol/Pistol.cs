@@ -12,25 +12,25 @@ public class Pistol : MonoBehaviour
     public Transform bulletOrigin;
     private bool _isPerformed = false;
 
-    [Header("Pistol Infos")] 
+    [Header("Pistol Infos")]
     public int ammo = 10;
     public int maxAmmo = 10;
-    public float timeForReload = 2f;
+    public float timeForReload = 1f;
     public float fireRate;
     public ParticleSystem fxShoot;
     private float _cdTime;
-    
 
-    [Header("Aim Infos")] 
+
+    [Header("Aim Infos")]
     public GameObject aim;
     public LayerMask layerMask;
     private Camera _camera;
     private AimConstraint _constraint;
-    
+
     public Vector3 hitPoint;
 
-    [Header("Animation Infos")] 
-    public Animator _animator; 
+    [Header("Animation Infos")]
+    public Animator _animator;
 
     private void Start()
     {
@@ -38,7 +38,6 @@ public class Pistol : MonoBehaviour
         _camera = Camera.main;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
 
-        _animator = gameObject.GetComponent<Animator>();
     }
 
     private void Update()
@@ -48,25 +47,22 @@ public class Pistol : MonoBehaviour
         if (_cdTime >= 0)
         {
             _cdTime -= Time.deltaTime;
-            
+
         }
-        else if(_isPerformed)
+        else if (_isPerformed)
         {
-            
+
             Shoot();
         }
 
-        if (_isPerformed && ammo <= 0)
-        {
-            StartCoroutine(Reload());
-            
-        }
+
     }
 
     public IEnumerator Reload()
     {
-        yield return new WaitForSeconds(timeForReload);
         _animator.SetTrigger("Reload");
+        yield return new WaitForSeconds(timeForReload);
+        Debug.Log("Reload ");
         ammo = maxAmmo;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
     }
@@ -79,10 +75,10 @@ public class Pistol : MonoBehaviour
         {
             //SetAim();
             _isPerformed = true;
-            
+
             //Shoot();
         }
-            
+
         if (context.canceled)
             _isPerformed = false;
     }
@@ -90,45 +86,53 @@ public class Pistol : MonoBehaviour
     void Shoot()
     {
         SetAim();
-        fxShoot.Play();
-        
+
+
         //Tirs
         if (ammo > 0 && _cdTime < 0)
         {
-             _animator.SetTrigger("Shoot");
+            fxShoot.Play();
+            _animator.SetTrigger("Shoot");
+
             _cdTime = fireRate;
             GameObject bullet = PoolingManager.Instance.GetPooledObject();
 
-            if (bullet != null) {
-                
+            if (bullet != null)
+            {
+
+
                 if (bullet.TryGetComponent<Bullet>(out Bullet compBullet))
                 {
                     bullet.SetActive(true);
                     compBullet.SetAimTransform(bulletOrigin);
-                   
 
                 }
-                
+
                 ammo--;
                 UIManager.Instance.ChangeAmmoText(ammo.ToString());
-                ScreenShaker.Instance.SetShake(0.01f,0.01f);
+                ScreenShaker.Instance.SetShake(0.01f, 0.01f);
             }
         }
+        if (_isPerformed && ammo <= 0)
+        {
+            StartCoroutine(Reload());
+
+        }
     }
-    
-    public void SetAim()                                                                                                                                                                                             
+
+    public void SetAim()
     {
         //Tir d'un rayon
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit,layerMask))
+        if (Physics.Raycast(ray, out hit, layerMask))
         {
             aim.transform.position = hit.point;
             hitPoint = hit.point;
             bulletOrigin.LookAt(aim.transform.position);
         }
     }
-    
-   
+
+
 }
