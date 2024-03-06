@@ -367,7 +367,6 @@ GameObject:
   - component: {fileID: 6436875036480821021}
   - component: {fileID: 4260484309053016900}
   - component: {fileID: 3096184850945207072}
-  - component: {fileID: 5119034649404184681}
   - component: {fileID: 8140487101305439601}
   - component: {fileID: 5318283024443345379}
   - component: {fileID: 2945466568952189382}
@@ -721,30 +720,6 @@ MonoBehaviour:
   camRotaPower: 1
   yVelocity: 0
   networkID: 0
---- !u!114 &5119034649404184681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1909040721046941923}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7b4a467e99bfaf48a6eac1c8508e7be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletOrigin: {fileID: 3487693889134738582}
-  ammo: 50
-  maxAmmo: 50
-  timeForReload: 1
-  fireRate: 0.1
-  fxShoot: {fileID: 4738376039181013317}
-  aim: {fileID: 2985146864251411504}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  hitPoint: {x: 0, y: 0, z: 0}
-  _animator: {fileID: 0}
 --- !u!114 &8140487101305439601
 MonoBehaviour:
   m_ObjectHideFlags: 0
