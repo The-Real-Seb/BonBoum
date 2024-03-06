@@ -97,10 +97,10 @@ public class EnemyBase : MonoBehaviour
     private void OnHit()
     {
         //Anim
-        ChangeMesh();
+        //ChangeMesh();
     }
 
-    private void Death()
+    public void Death()
     {
         gameObject.SetActive(false);
         GameManager.Instance.AddPlayerPoints(killValue);
@@ -109,19 +109,20 @@ public class EnemyBase : MonoBehaviour
 
        
 
-    private void ChangeMesh()
+    public void ChangeMesh(float life)
     {
-        if (lifeComponent.actualLife <= 75 && lifeComponent.actualLife > 51)
+        Debug.Log(life);
+        if (life <= 75 && life > 51)
         {
             meshLvl1.SetActive(false);
             meshLvl2.SetActive(true);
-        }else if (lifeComponent.actualLife <= 50 && lifeComponent.actualLife > 26)
+        }else if (life <= 50 && life > 26)
         {
             meshLvl2.SetActive(false);
             meshLvl3.SetActive(true);
 
             agent.speed = speed * 0.6f;
-        }else if (lifeComponent.actualLife <= 25)
+        }else if (life <= 25)
         {
             meshLvl3.SetActive(false);
             meshLvl4.SetActive(true);

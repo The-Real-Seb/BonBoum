@@ -7,9 +7,12 @@ public class Enemylife : MonoBehaviour, Idamageable
     public float actualLife;
     public float maxLife;
 
+    private EnemyBase enemyBase;
+
     private void Start()
     {
         actualLife = maxLife;
+        enemyBase = GetComponent<EnemyBase>();
     }
 
     public void Damage(float damage)
@@ -17,11 +20,12 @@ public class Enemylife : MonoBehaviour, Idamageable
         if (actualLife >= damage)
         {
             actualLife -= damage;
-            Debug.Log("Damage");            
+            Debug.Log("Damage");
+            enemyBase.ChangeMesh(actualLife);
         }
         else
         {
-            //Death
+            enemyBase.Death();
         }
     }
 }
