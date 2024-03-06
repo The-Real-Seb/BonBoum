@@ -1,22 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Collider))]
-public class EnemyBase : MonoBehaviour, Idamageable
+public class EnemyBase : MonoBehaviour
 {
-    public NavMeshAgent agent;
-
-    public float maxLife;
-    public float life;
+    public NavMeshAgent agent;   
     public float speed;
     public float attackDamage;
     public float cooldownAttack;
+    private float actualCdTime;
     private bool canAttack;
     public int killValue;
+    public Enemylife lifeComponent;
 
     public GameObject meshLvl1;
     public GameObject meshLvl2;
@@ -34,7 +34,7 @@ public class EnemyBase : MonoBehaviour, Idamageable
     public void Init()
     {
         agent = GetComponent<NavMeshAgent>();
-        life = maxLife;
+        lifeComponent = GetComponent<Enemylife>();        
         canAttack = true;
         agent.speed = speed;
         meshLvl1.SetActive(true);
@@ -53,31 +53,46 @@ public class EnemyBase : MonoBehaviour, Idamageable
             //agent.Move(player.transform.position);
             agent.SetDestination(player.transform.position);
         }
+
+        if (actualCdTime >= 0)
+        {
+            actualCdTime -= Time.deltaTime;
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+   /* private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (TryGetComponent<Idamageable>(out Idamageable player))
+            Debug.Log("Damage");
+            if (collision.TryGetComponent(out Idamageable player))
             {
-                Attack(player);
+
+                if (canAttack && actualCdTime <= 0)
+                {
+                    player.Damage(attackDamage);
+                    actualCdTime = cooldownAttack;
+                }
+            }
+        }
+    }*/
+
+    private void OnTriggerStay(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {            
+            if (collision.TryGetComponent(out Idamageable player))
+            {
+
+                if (canAttack && actualCdTime <= 0)
+                {
+                    player.Damage(attackDamage);
+                    actualCdTime = cooldownAttack;
+                }
             }
         }
     }
-
-    public void Damage(float damage)
-    {
-        if (life > damage)
-        {
-            life -= damage;
-            OnHit();
-        }
-        else
-        {
-            Death();
-        }
-    }
+      
 
     private void OnHit()
     {
@@ -92,35 +107,21 @@ public class EnemyBase : MonoBehaviour, Idamageable
         WaveManager.Instance.EnemyGetKilled();
     }
 
-    private void Attack(Idamageable player)
-    {
-        if (canAttack)
-        {
-            player.Damage(attackDamage);
-            StartCoroutine(CooldownAttack());
-        }
-    }
-
-    IEnumerator CooldownAttack()
-    {
-        canAttack = false;
-        yield return new WaitForSeconds(cooldownAttack);
-        canAttack = true;
-    }
+       
 
     private void ChangeMesh()
     {
-        if (life <= 75 && life > 51)
+        if (lifeComponent.actualLife <= 75 && lifeComponent.actualLife > 51)
         {
             meshLvl1.SetActive(false);
             meshLvl2.SetActive(true);
-        }else if (life <= 50 && life > 26)
+        }else if (lifeComponent.actualLife <= 50 && lifeComponent.actualLife > 26)
         {
             meshLvl2.SetActive(false);
             meshLvl3.SetActive(true);
 
             agent.speed = speed * 0.6f;
-        }else if (life <= 25)
+        }else if (lifeComponent.actualLife <= 25)
         {
             meshLvl3.SetActive(false);
             meshLvl4.SetActive(true);

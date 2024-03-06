@@ -12209,6 +12209,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4260484309053016900, guid: 27a23be852a8f4b40b934701f28d9264,
+        type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5119034649404184681, guid: 27a23be852a8f4b40b934701f28d9264,
         type: 3}
       propertyPath: ammo
@@ -12218,6 +12223,11 @@ PrefabInstance:
         type: 3}
       propertyPath: maxAmmo
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 5119034649404184681, guid: 27a23be852a8f4b40b934701f28d9264,
+        type: 3}
+      propertyPath: fireRate
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5318283024443345379, guid: 27a23be852a8f4b40b934701f28d9264,
         type: 3}

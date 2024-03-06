@@ -46,9 +46,10 @@ public class Pistol : MonoBehaviour
             _cdTime -= Time.deltaTime;
             
         }
-        else
+        else if(_isPerformed)
         {
-            //SetAim();
+            
+            Shoot();
         }
 
         if (_isPerformed && ammo <= 0)
@@ -70,10 +71,10 @@ public class Pistol : MonoBehaviour
         //Listener du bouton de tir
         if (context.started)
         {
-            SetAim();
+            //SetAim();
             _isPerformed = true;
-            fxShoot.Play();
-            Shoot();
+            
+            //Shoot();
         }
             
         if (context.canceled)
@@ -82,6 +83,8 @@ public class Pistol : MonoBehaviour
 
     void Shoot()
     {
+        SetAim();
+        fxShoot.Play();
         //Tirs
         if (ammo > 0 && _cdTime < 0)
         {
