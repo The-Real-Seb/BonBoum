@@ -37,8 +37,6 @@ public class Pistol : MonoBehaviour
         //if (!IsOwner) return;
         _camera = Camera.main;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
-
-        _animator = gameObject.GetComponent<Animator>();
     }
 
     private void OnEnable()
