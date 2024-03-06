@@ -29,12 +29,16 @@ public class Pistol : MonoBehaviour
     
     public Vector3 hitPoint;
 
-    
+    [Header("Animation Infos")] 
+    public Animator _animator; 
+
     private void Start()
     {
         //if (!IsOwner) return;
         _camera = Camera.main;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
+
+        _animator = gameObject.GetComponent<Animator>();
     }
 
     private void Update()
@@ -54,12 +58,14 @@ public class Pistol : MonoBehaviour
         if (_isPerformed && ammo <= 0)
         {
             StartCoroutine(Reload());
+            
         }
     }
 
     public IEnumerator Reload()
     {
         yield return new WaitForSeconds(timeForReload);
+        _animator.SetTrigger("Reload");
         ammo = maxAmmo;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
     }
@@ -82,9 +88,11 @@ public class Pistol : MonoBehaviour
 
     void Shoot()
     {
+        
         //Tirs
         if (ammo > 0 && _cdTime < 0)
         {
+             _animator.SetTrigger("Shoot");
             _cdTime = fireRate;
             GameObject bullet = PoolingManager.Instance.GetPooledObject();
 
@@ -94,45 +102,16 @@ public class Pistol : MonoBehaviour
                 {
                     bullet.SetActive(true);
                     compBullet.SetAimTransform(bulletOrigin);
+                   
+
                 }
                 
                 ammo--;
                 UIManager.Instance.ChangeAmmoText(ammo.ToString());
                 ScreenShaker.Instance.SetShake(0.01f,0.01f);
-                //ShootServerRpc();
             }
         }
     }
-    
-    /*
-    [ServerRpc]
-    private void ShootServerRpc()
-    {
-        ShootClientRpc();
-    }
-
-    [ClientRpc]
-    private void ShootClientRpc()
-    {
-        if (IsOwner) return; // Ignore sur le client qui a tiré
-
-        //Calcul de la visée, Reset du CD de tir et deduction d'une balle
-        //SetAim();
-        _cdTime = fireRate;
-            
-        //Tir Basic, recupere une balle du PoolingManager
-        GameObject bullet = PoolingManager.Instance.GetPooledObject();
-            
-
-        //Set la position de la balle au bout du canon du pistolet
-        if (bullet != null) {
-            bullet.transform.position = bulletOrigin.position;
-            bullet.transform.rotation = bulletOrigin.rotation;
-
-            //Active la balle
-            bullet.SetActive(true);
-        }
-    }*/
     
     public void SetAim()                                                                                                                                                                                             
     {
