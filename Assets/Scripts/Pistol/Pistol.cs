@@ -65,7 +65,7 @@ public class Pistol : MonoBehaviour
     public IEnumerator Reload()
     {
         yield return new WaitForSeconds(timeForReload);
-        //_animator?.SetTrigger("Reload");
+        _animator?.SetTrigger("Reload");
         ammo = maxAmmo;
         UIManager.Instance.ChangeAmmoText(ammo.ToString());
     }
@@ -89,13 +89,14 @@ public class Pistol : MonoBehaviour
     void Shoot()
     {
         SetAim();
-        fxShoot.Play();        
+      
         
         //Tirs
         if (ammo > 0 && _cdTime < 0)
         {
-            //_animator?.SetTrigger("Shoot");
+            _animator?.SetTrigger("Shoot");
             _cdTime = fireRate;
+              fxShoot.Play();        
             GameObject bullet = PoolingManager.Instance.GetPooledObject();
 
             if (bullet != null) {
