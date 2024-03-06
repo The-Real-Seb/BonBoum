@@ -9869,12 +9869,39 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &1433951881 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1416636348386904057, guid: 27a23be852a8f4b40b934701f28d9264,
+    type: 3}
+  m_PrefabInstance: {fileID: 1863187630}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1433951883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5538749836837054159, guid: 27a23be852a8f4b40b934701f28d9264,
     type: 3}
   m_PrefabInstance: {fileID: 1863187630}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1433951884
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433951881}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f59e254ffcac59f439c3939c48b4347d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1467905885
 GameObject:
   m_ObjectHideFlags: 0
@@ -12390,7 +12417,7 @@ PrefabInstance:
     - target: {fileID: 7492313519668933543, guid: 27a23be852a8f4b40b934701f28d9264,
         type: 3}
       propertyPath: fireRate
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7544269744931463989, guid: 27a23be852a8f4b40b934701f28d9264,
         type: 3}
@@ -12416,7 +12443,11 @@ PrefabInstance:
         type: 3}
       insertIndex: 1
       addedObject: {fileID: 570465471895714875}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1416636348386904057, guid: 27a23be852a8f4b40b934701f28d9264,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1433951884}
   m_SourcePrefab: {fileID: 100100000, guid: 27a23be852a8f4b40b934701f28d9264, type: 3}
 --- !u!1 &1876004463
 GameObject:
