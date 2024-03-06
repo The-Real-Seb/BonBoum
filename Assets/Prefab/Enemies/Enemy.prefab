@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 1974869375692284608}
   - component: {fileID: 531472859245123892}
   - component: {fileID: 4434560264151623107}
-  - component: {fileID: 8259107267470934301}
+  - component: {fileID: 7005760379919422788}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -296,13 +296,13 @@ MonoBehaviour:
   attackDamage: 10
   cooldownAttack: 1
   killValue: 10
-  lifeComponent: {fileID: 0}
+  lifeComponent: {fileID: 7005760379919422788}
   meshLvl1: {fileID: 8368149580090445161}
   meshLvl2: {fileID: 3026030806727695525}
   meshLvl3: {fileID: 495375689586524448}
   meshLvl4: {fileID: 7375442063560930263}
   player: {fileID: 0}
---- !u!114 &8259107267470934301
+--- !u!114 &7005760379919422788
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,10 +311,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1074437188982495000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50e099cf0f1eb864891cc39eb9e5e9d7, type: 3}
+  m_Script: {fileID: 11500000, guid: eb4b841ce1eeda54fa7e8a2e8c946c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actualLife: 100
+  actualLife: 0
   maxLife: 100
 --- !u!1 &1312349414661370806
 GameObject:

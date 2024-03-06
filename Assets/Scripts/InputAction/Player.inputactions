@@ -67,6 +67,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchWeapon",
+                    "type": "Value",
+                    "id": "627c8b93-e33a-417e-94fb-d1b189652ca2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -344,6 +353,39 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Molette",
+                    "id": "18b960ce-7d8b-4dcb-a145-6e5386227d0a",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchWeapon",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "9b35ac11-1df5-4450-99a2-1c0eca46148a",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "9c2257de-3ee0-4987-ac74-893958fbe86c",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
