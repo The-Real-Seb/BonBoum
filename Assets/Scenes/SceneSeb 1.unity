@@ -31460,8 +31460,8 @@ MonoBehaviour:
   bulletOrigin: {fileID: 3487693890895527992}
   ammo: 50
   maxAmmo: 50
-  timeForReload: 1
-  fireRate: 0.000001
+  timeForReload: 5
+  fireRate: 0.05
   fxShoot: {fileID: 4738376040942317035}
   aim: {fileID: 2985146863497142430}
   layerMask:
