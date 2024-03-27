@@ -12,12 +12,22 @@ public class SelectWeapon : MonoBehaviour
 
     public void TriggerFire(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.isGamePaused) { return; }
         pistols[selectedWeaponIndex].Fire(context);
     }
 
+    public void InputReload(InputAction.CallbackContext context)
+    {
+        if (GameManager.Instance.isGamePaused) { return; }
+        if (context.started)
+        {
+            StartCoroutine(pistols[selectedWeaponIndex].Reload());
+        }
+    }
 
     public void SwitchWeapon(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.isGamePaused) { return; }
         if (context.performed)
         {
             float scrollValue = context.ReadValue<float>();

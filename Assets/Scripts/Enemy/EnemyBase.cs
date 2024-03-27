@@ -48,8 +48,10 @@ public class EnemyBase : MonoBehaviour
 
     private void Update()
     {
-        if (player)
+        if (GameManager.Instance.isGamePaused) { agent.isStopped = true; return; }
+        else if (player)
         {
+            agent.isStopped = false;
             //agent.Move(player.transform.position);
             agent.SetDestination(player.transform.position);
         }

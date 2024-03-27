@@ -13,6 +13,35 @@ public class GameManager : MonoBehaviour
 
     public int waveNumber;
     public int playerPoints;
+    public bool isGamePaused;
+    public bool isPlayerDead;
+
+    public GameObject settingsPanel;
+
+    public void PauseGame()
+    {
+        if(isPlayerDead) { return; }
+
+        if (isGamePaused)
+        {
+            settingsPanel.SetActive(false);
+            Cursor.visible = false;
+            Screen.lockCursor = true;
+            isGamePaused = false;
+        }
+        else
+        {
+            settingsPanel.SetActive(true);
+            Cursor.visible = true;
+            Screen.lockCursor = false;
+            isGamePaused = true;
+        }
+    }
+
+    public void ShowEndScore()
+    {
+
+    }
 
     public void AddPlayerPoints(int points)
     {

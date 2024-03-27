@@ -5,6 +5,7 @@ using BaseTemplate.Behaviours;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Movement : MonoBehaviour
 {
@@ -51,12 +52,30 @@ public class Movement : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
+        if(PlayerPrefs.HasKey("xSens") || PlayerPrefs.HasKey("ySens"))
+        {
+            xSensitivity = PlayerPrefs.GetFloat("xSens");
+            ySensitivity = PlayerPrefs.GetFloat("ySens");
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("xSens", 3f);
+            PlayerPrefs.SetFloat("ySens", 3f);
+            PlayerPrefs.Save();
+
+            xSensitivity = PlayerPrefs.GetFloat("xSens");
+            ySensitivity = PlayerPrefs.GetFloat("ySens");
+        }
+
+
     }
 
     private bool afterDash;
     private void Update()
     {
+        if(GameManager.Instance.isGamePaused) { return; }
+
         float fov ;
         if (_dashTimeLeft > 0)
         {
@@ -117,8 +136,11 @@ public class Movement : MonoBehaviour
     {
         _dir = context.ReadValue<Vector2>();
     }
+
     public void Aim(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.isGamePaused) { return; }
+
         Vector2 mouseMove = context.ReadValue<Vector2>();
 
         _xRotation += mouseMove.x * Time.deltaTime * xSensitivity;
@@ -164,6 +186,7 @@ public class Movement : MonoBehaviour
     }
     public void Jump(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.isGamePaused) { return; }
         //if (!IsOwner) return;
         if (IsGrounded() && context.performed)
         {
@@ -172,6 +195,7 @@ public class Movement : MonoBehaviour
     }
     private void ApplyGravity()
     {
+        if (GameManager.Instance.isGamePaused) { return; }
         //if (!IsOwner) return;
         if (IsGrounded()) yVelocity = -0.5f;
         else yVelocity += gravity * Time.deltaTime;
