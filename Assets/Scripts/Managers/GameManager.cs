@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     public bool isPlayerDead;
 
     public GameObject settingsPanel;
+    public EndGamePanel endGamePanel;
 
     public void PauseGame()
     {
@@ -40,7 +42,14 @@ public class GameManager : MonoBehaviour
 
     public void ShowEndScore()
     {
+        endGamePanel.gameObject.SetActive(true);
 
+        Cursor.visible = true;
+        Screen.lockCursor = false;
+        isGamePaused = true;
+
+        endGamePanel.ShowEndScore(playerPoints);
+        isPlayerDead = true;
     }
 
     public void AddPlayerPoints(int points)
@@ -73,5 +82,15 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+    }
+
+    public void Reset()
+    {
+        Cursor.visible = false;
+        Screen.lockCursor = true;
+        isGamePaused = false;        
+        isPlayerDead = false;
+
+        SceneManager.LoadScene(0);
     }
 }

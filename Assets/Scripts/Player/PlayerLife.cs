@@ -12,6 +12,7 @@ public class PlayerLife : MonoBehaviour, Idamageable
     private void Start()
     {
         actualLife = maxLife;
+        UIManager.Instance.ChangeLifeValue(actualLife);
     }
 
     public void Damage(float damage)
@@ -19,12 +20,11 @@ public class PlayerLife : MonoBehaviour, Idamageable
         if (actualLife >= damage)
         {
             actualLife -= damage;
-            Debug.Log("Damage");
-            //HitServerRpc(damage);
+            UIManager.Instance.ChangeLifeValue(actualLife);            
         }
         else
         {
-            //Death
+            GameManager.Instance.ShowEndScore();
         }
     }
     /*
